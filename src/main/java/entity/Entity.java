@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Entity {
@@ -19,4 +20,7 @@ public class Entity {
 
     public int afkCounter = 0;
     public int afkNum = 1;
+
+    public Rectangle solidArea;
+    public boolean collisionOn = false;
 }
