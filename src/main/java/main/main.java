@@ -5,7 +5,7 @@ import javax.swing.*;
 public class main {
     public static void main(String[] args) {
 
-        // Building the JFrame for the game
+        // Building the JFrame
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
@@ -19,6 +19,7 @@ public class main {
         window.setLocationRelativeTo(null);
         window.setVisible(true);
 
+        //gamePanel.setupGame();
         gamePanel.startGameThread();
     }
 }

@@ -13,23 +13,35 @@ public class Player extends Entity {
     GamePanel gp;
     KeyHandler keyH;
 
+    public final int screenX;
+    public final int screenY;
+
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
+
+        screenX = gp.screenWidth/2 - (gp.tileSize/2);
+        screenY = gp.screenHeight/2 - (gp.tileSize/2);
 
         setDefaultValues();
         getPlayerImage();
     }
 
     public void setDefaultValues() {
-        x = 100;
-        y = 100;
+
+        // Set default coordinates, speed & direction of the player
+        worldX = gp.tileSize * 25;
+        worldY = gp.tileSize * 112;
         speed = 4;
         direction = "sKey";
     }
 
     public void getPlayerImage() {
         try {
+
+            /*
+            Reading player images from source folder, where images are being stores.
+             */
 
             // PLAYER AFK
             wAfk1 = ImageIO.read(getClass().getResourceAsStream("/player/Back/W.AFK1.png"));
@@ -84,16 +96,16 @@ public class Player extends Entity {
         if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
             if (keyH.upPressed == true) {
                 direction = "wKey";
-                y -= speed;
+                worldY -= speed;
             } else if (keyH.downPressed == true) {
                 direction = "sKey";
-                y += speed;
+                worldY += speed;
             } else if (keyH.leftPressed == true) {
                 direction = "aKey";
-                x -= speed;
+                worldX -= speed;
             } else if (keyH.rightPressed == true) {
                 direction = "dKey";
-                x += speed;
+                worldX += speed;
             }
 
             spriteCounter++;
@@ -251,6 +263,6 @@ public class Player extends Entity {
                 }
                 break;
         }
-        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+        g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
     }
 }

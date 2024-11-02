@@ -1,6 +1,8 @@
 package main;
 
 import entity.Player;
+//import object.SuperObject;
+import tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,28 +12,45 @@ public class GamePanel extends JPanel implements Runnable{
 
     // Screen Settings
     final int originalTileSize = 16; // 16x16 pixels
-    final int scale = 4;
+    final int scale = 4; // 16x16 * 4
 
-    public int tileSize = originalTileSize * scale; // 64x64 pixels
-    final int maxScreenCol = 20;
-    final int maxScreenRow = 16;
-    final int screenWidth = tileSize * maxScreenCol; // 1280 pixels
-    final int screenHeight = tileSize * maxScreenRow; // 1024 pixels
+    public final int tileSize = originalTileSize * scale; // 64x64 pixels
+    public final int maxScreenCol = 20;
+    public final int maxScreenRow = 16;
+    public final int screenWidth = tileSize * maxScreenCol; // 1280 pixels
+    public final int screenHeight = tileSize * maxScreenRow; // 1024 pixels
+
+    // WORLD SETTINGS
+    public final int maxWorldCol = 160;
+    public final int maxWorldRow = 128;
+    public final int worldWidth = tileSize * maxWorldCol;
+    public final int worldHeight = tileSize * maxWorldRow;
 
     // FPS
     int FPS = 60;
 
+    TileManager tileM = new TileManager(this);
+
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
-    Player player = new Player(this, keyH);
+    public Player player = new Player(this, keyH);
+
+    //public AssetSetter aSetter = new AssetSetter(this);
+    //public SuperObject obj[] = new SuperObject[25];
 
     public GamePanel() {
+
+        // Set Screen Preferences (size, background, etc...)
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
     }
+
+    //public void setupGame(){
+    //    aSetter.setObject();
+    //}
 
     public void startGameThread(){
         gameThread = new Thread(this);
@@ -41,6 +60,7 @@ public class GamePanel extends JPanel implements Runnable{
     @Override
     public void run() {
 
+        // Using 60 FPS as a max limit
         double drawInterval = 1000000000 / FPS; // 0.01666 seconds
         double delta = 0;
         long lastTime = System.nanoTime();
@@ -71,8 +91,12 @@ public class GamePanel extends JPanel implements Runnable{
     public void paintComponent(Graphics g){
         super.paintComponent(g);
 
-        Graphics2D g2 = (Graphics2D) g;
+        Graphics2D g2 = (Graphics2D)g;
 
+        // Draw background tiles
+        tileM.draw(g2);
+
+        // Draw player character
         player.draw(g2);
 
         g2.dispose();
