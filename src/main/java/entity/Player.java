@@ -30,7 +30,7 @@ public class Player extends Entity {
     public void setDefaultValues() {
 
         // Set default coordinates, speed & direction of the player
-        worldX = gp.tileSize * 25;
+        worldX = gp.tileSize * 24;
         worldY = gp.tileSize * 112;
         speed = 4;
         direction = "sKey";
