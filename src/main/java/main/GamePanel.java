@@ -1,7 +1,9 @@
 package main;
 
+import entity.Entity;
 import entity.Player;
-//import object.SuperObject;
+import monster.MON_Bat;
+import object.SuperObject;
 import tile.TileManager;
 
 import javax.swing.*;
@@ -29,15 +31,24 @@ public class GamePanel extends JPanel implements Runnable{
     // FPS
     int FPS = 60;
 
+    // SYSTEM
     TileManager tileM = new TileManager(this);
-
-    KeyHandler keyH = new KeyHandler();
+    KeyHandler keyH = new KeyHandler(this);
+    UI ui = new UI(this);
     Thread gameThread;
     public CollisionChecker cChecker = new CollisionChecker(this);
-    public Player player = new Player(this, keyH);
+    public AssetSetter aSetter = new AssetSetter(this);
 
-    //public AssetSetter aSetter = new AssetSetter(this);
-    //public SuperObject obj[] = new SuperObject[25];
+    // ENTITY AND OBJECT
+    public Player player = new Player(this, keyH);
+    public SuperObject obj[] = new SuperObject[20];
+    public Entity npc[] = new Entity[5];
+    public Entity monster[] = new Entity[30];
+
+    // GAME STATE
+    public int gameState;
+    public final int playState = 1;
+    public final int pauseState = 2;
 
     public GamePanel() {
 
@@ -49,9 +60,12 @@ public class GamePanel extends JPanel implements Runnable{
         this.setFocusable(true);
     }
 
-    //public void setupGame(){
-    //    aSetter.setObject();
-    //}
+    public void setupGame(){
+        aSetter.setObject();
+        aSetter.setNPC();
+        aSetter.setMonster();
+        gameState = playState;
+    }
 
     public void startGameThread(){
         gameThread = new Thread(this);
@@ -74,18 +88,42 @@ public class GamePanel extends JPanel implements Runnable{
             lastTime = currentTime;
 
             if(delta >= 1){
-                // 1 UPDATE: Update information such as character positions
-                update();
+                if (gameState == playState){
+                    // 1 UPDATE: Update information such as character positions
+                    update();
 
-                // 2 DRAW: Draw the screen with the updated information
-                repaint();
+                    // 2 DRAW: Draw the screen with the updated information
+                    repaint();
 
-                delta--;
+                    delta--;
+                } else if (gameState == pauseState){
+                    repaint();
+                }
             }
         }
     }
 
     public void update(){
+        if(gameState == playState){
+            // PLAYER
+            player.update();
+            // NPC
+            for(int i = 0; i < npc.length; i++){
+                if(npc[i] != null){
+                    npc[i].update();
+                }
+            }
+            // MONSTER
+            for(int i = 0; i < monster.length; i++){
+                if(monster[i] != null){
+                    monster[i].update();
+                }
+            }
+        }
+        if(gameState == pauseState){
+            // nothing
+        }
+
         player.update();
     }
 
@@ -97,8 +135,35 @@ public class GamePanel extends JPanel implements Runnable{
         // Draw background tiles
         tileM.draw(g2);
 
+        // Draw Objects
+        for (int i = 0; i < obj.length; i++) {
+            if (obj[i] != null) {
+                obj[i].draw(g2, this);
+            }
+        }
+
+        // Draw NPC character
+        for (int i = 0; i < npc.length; i++) {
+            if (npc[i] != null) {
+                npc[i].draw(g2);
+            }
+        }
+
+        // Draw Monster character
+        for (int i = 0; i < monster.length; i++) {
+            if (monster[i] != null) {
+                System.out.println("Drawing monster at index " + i);
+                monster[i].draw(g2);
+            } else {
+                System.out.println("Monster at index " + i + " is null.");
+            }
+        }
+
         // Draw player character
         player.draw(g2);
+
+        // Draw UI
+        ui.draw(g2);
 
         g2.dispose();
     }

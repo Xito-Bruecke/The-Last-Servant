@@ -14,7 +14,7 @@ public class TileManager {
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
-        tile = new Tile[100];
+        tile = new Tile[68];
 
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
@@ -309,7 +309,6 @@ public class TileManager {
                     try {
                         mapTileNum[col][row] = Integer.parseInt(numbers[col]);
                         // Debugging: Confirm tile assignment to mapTileNum array
-                        System.out.println("Assigned tile number " + mapTileNum[col][row] + " at position (" + col + ", " + row + ")");
                     } catch (NumberFormatException e) {
                         System.err.println("Error parsing tile number at (" + col + ", " + row + "): " + numbers[col]);
                     }
@@ -330,8 +329,6 @@ public class TileManager {
         while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
 
             int tileNum = mapTileNum[worldCol][worldRow];
-
-            System.out.println("Drawing tile number " + tileNum + " at world position (" + worldCol + ", " + worldRow + ")");
 
             int worldX = worldCol * gp.tileSize;
             int worldY = worldRow * gp.tileSize;

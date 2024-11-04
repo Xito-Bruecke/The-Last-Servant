@@ -10,14 +10,22 @@ import java.io.IOException;
 
 public class Player extends Entity {
 
-    GamePanel gp;
     KeyHandler keyH;
-
     public final int screenX;
     public final int screenY;
 
+    int hasRing = 0;
+    int hasFackel = 0;
+    int hasSword = 0;
+    int hasCrown = 0;
+    int hasBoots = 0;
+    int hasLeggings = 0;
+    int hasChestPlate = 0;
+    int hasHelmet = 0;
+
     public Player(GamePanel gp, KeyHandler keyH) {
-        this.gp = gp;
+
+        super(gp);
         this.keyH = keyH;
 
         screenX = gp.screenWidth/2 - (gp.tileSize/2);
@@ -26,6 +34,8 @@ public class Player extends Entity {
         solidArea = new Rectangle();
         solidArea.x = 16;
         solidArea.y = 28;
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
         solidArea.width = 40;
         solidArea.height = 40;
 
@@ -40,6 +50,10 @@ public class Player extends Entity {
         worldY = gp.tileSize * 112;
         speed = 4;
         direction = "sKey";
+
+        // PLAYER STATUS
+        maxLife = 6;
+        life = maxLife;
     }
 
     public void getPlayerImage() {
@@ -67,12 +81,12 @@ public class Player extends Entity {
             dAfk3 = ImageIO.read(getClass().getResourceAsStream("/player/Right/D.AFK3.png"));
 
             // PLAYER MOVING
-            w1 = ImageIO.read(getClass().getResourceAsStream("/player/Front/S1.png"));
-            w2 = ImageIO.read(getClass().getResourceAsStream("/player/Front/S2.png"));
-            w3 = ImageIO.read(getClass().getResourceAsStream("/player/Front/S3.png"));
-            w4 = ImageIO.read(getClass().getResourceAsStream("/player/Front/S4.png"));
-            w5 = ImageIO.read(getClass().getResourceAsStream("/player/Front/S5.png"));
-            w6 = ImageIO.read(getClass().getResourceAsStream("/player/Front/S6.png"));
+            w1 = ImageIO.read(getClass().getResourceAsStream("/player/Back/W1.png"));
+            w2 = ImageIO.read(getClass().getResourceAsStream("/player/Back/W2.png"));
+            w3 = ImageIO.read(getClass().getResourceAsStream("/player/Back/W3.png"));
+            w4 = ImageIO.read(getClass().getResourceAsStream("/player/Back/W4.png"));
+            w5 = ImageIO.read(getClass().getResourceAsStream("/player/Back/W5.png"));
+            w6 = ImageIO.read(getClass().getResourceAsStream("/player/Back/W6.png"));
 
             s1 = ImageIO.read(getClass().getResourceAsStream("/player/Front/S1.png"));
             s2 = ImageIO.read(getClass().getResourceAsStream("/player/Front/S2.png"));
@@ -113,6 +127,18 @@ public class Player extends Entity {
             // CHECK TILE COLLISION
             collisionOn = false;
             gp.cChecker.checkTile(this);
+
+            // CHECK OBJECT COLLISION
+            int objIndex = gp.cChecker.checkObject(this, true);
+            pickUpObject(objIndex);
+
+            // CHECK NPC COLLISION
+            int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
+            interactNPC(npcIndex);
+
+            // CHECK MONSTER COLLISION
+            int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
+            contactMonster(monsterIndex);
 
             // If Collision is false, player can move
             if (collisionOn == false) {
@@ -188,6 +214,83 @@ public class Player extends Entity {
                 }
                 afkCounter = 0;
             }
+        }
+
+        if (invincible == true) {
+            invincibleCounter++;
+            if (invincibleCounter >= 60) {
+                invincible = false;
+                invincibleCounter = 0;
+            }
+        }
+    }
+
+    public void pickUpObject(int i) {
+        if (i != 999) {
+            String objectName = gp.obj[i].name;
+
+            switch (objectName) {
+                case "Ring":
+                    hasRing++;
+                    gp.obj[i] = null;
+                    break;
+                case "Sword":
+                    hasSword++;
+                    gp.obj[i] = null;
+                    break;
+                case "Torch":
+                    hasFackel++;
+                    gp.obj[i] = null;
+                    break;
+                case "Latter":
+                    if(hasFackel > 0 && hasSword > 0 && hasRing > 0) {
+                        worldX = gp.tileSize * 69;
+                        worldY = gp.tileSize * 19;
+                    } else {
+                        System.out.println("Can't enter!");
+                    }
+                    break;
+                case "Door":
+                    if(hasRing > 0) {
+                        gp.obj[i] = null;
+                        hasRing--;
+                    }
+                    break;
+                case "Crown":
+                    hasCrown++;
+                    gp.obj[i] = null;
+                    break;
+                case "Altar":
+                    if (hasCrown > 0) {
+                        worldX = gp.tileSize * 138;
+                        worldY = gp.tileSize * 54;
+                    } else {
+                        System.out.println("Can't enter!");
+                    }
+                    break;
+                case "Chest":
+                    hasBoots++;
+                    hasLeggings++;
+                    hasChestPlate++;
+                    hasHelmet++;
+                    gp.obj[i] = null;
+                    break;
+            }
+        }
+    }
+
+    public void interactNPC(int i) {
+        if (i != 999) {
+            System.out.println("touching!");
+        }
+    }
+
+    public void contactMonster(int i) {
+        if (i != 999) {
+            // Decrease life
+            if (invincible == false);
+            life -=1;
+            invincible = true;
         }
     }
 
