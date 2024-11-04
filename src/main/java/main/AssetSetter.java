@@ -10,13 +10,15 @@ import object.*;
 
 public class AssetSetter {
 
-    GamePanel gp;
+    GamePanel gp;  // Reference to the main game panel for access to tile size, object arrays, and other game elements
 
     public AssetSetter(GamePanel gp) {
         this.gp = gp;
     }
 
+    // Method to initialize and place objects in the game world
     public void setObject() {
+        // Setting objects with specific world coordinates
         gp.obj[0] = new OBJ_Ring();
         gp.obj[0].worldX = 28 * gp.tileSize;
         gp.obj[0].worldY = 60 * gp.tileSize;
@@ -50,13 +52,16 @@ public class AssetSetter {
         gp.obj[7].worldY = 54 * gp.tileSize;
     }
 
+    // Method to initialize and place NPCs in the game world
     public void setNPC() {
-        gp.npc[0] = new NPC(gp);
-        gp.npc[0].worldX = 84 * gp.tileSize;
-        gp.npc[0].worldY = 99 * gp.tileSize;
+        gp.npc[0] = new NPC(gp); // Assign NPC instance to the first slot in the npc array
+        gp.npc[0].worldX = 84 * gp.tileSize;  // Set the X coordinate of the NPC in world tiles
+        gp.npc[0].worldY = 99 * gp.tileSize;  // Set the Y coordinate of the NPC in world tiles
     }
 
+    // Method to initialize and place monsters in the game world
     public void setMonster() {
+        // Setting multiple monsters of various types with specific world coordinates
         gp.monster[0] = new MON_Bat(gp);
         gp.monster[0].worldX = 72 * gp.tileSize;
         gp.monster[0].worldY = 20 * gp.tileSize;
@@ -73,10 +78,11 @@ public class AssetSetter {
         gp.monster[3].worldX = 72 * gp.tileSize;
         gp.monster[3].worldY = 19 * gp.tileSize;
 
-        gp.monster[4] = new MON_Ritter_Blau(gp);
-        gp.monster[4].worldX =  138 * gp.tileSize;
+        gp.monster[4] = new MON_Ritter_Blau(gp); // Different type of monster
+        gp.monster[4].worldX = 138 * gp.tileSize;
         gp.monster[4].worldY = 39 * gp.tileSize;
 
+        // Additional MON_Bat instances with varying positions
         gp.monster[5] = new MON_Bat(gp);
         gp.monster[5].worldX = 138 * gp.tileSize;
         gp.monster[5].worldY = 38 * gp.tileSize;
@@ -101,7 +107,7 @@ public class AssetSetter {
         gp.monster[10].worldX = 139 * gp.tileSize;
         gp.monster[10].worldY = 36 * gp.tileSize;
 
-        gp.monster[11] = new MON_Ritter_Gruen(gp);
+        gp.monster[11] = new MON_Ritter_Gruen(gp); // Another different monster type
         gp.monster[11].worldX = 136 * gp.tileSize;
         gp.monster[11].worldY = 58 * gp.tileSize;
 
@@ -109,6 +115,7 @@ public class AssetSetter {
         gp.monster[12].worldX = 141 * gp.tileSize;
         gp.monster[12].worldY = 58 * gp.tileSize;
 
+        // More MON_Bat instances with assigned coordinates
         gp.monster[13] = new MON_Bat(gp);
         gp.monster[13].worldX = 136 * gp.tileSize;
         gp.monster[13].worldY = 59 * gp.tileSize;
@@ -141,10 +148,11 @@ public class AssetSetter {
         gp.monster[20].worldX = 141 * gp.tileSize;
         gp.monster[20].worldY = 62 * gp.tileSize;
 
-        gp.monster[21] = new MON_King(gp);
+        gp.monster[21] = new MON_King(gp); // Special monster type
         gp.monster[21].worldX = 119 * gp.tileSize;
         gp.monster[21].worldY = 100 * gp.tileSize;
 
+        // Additional MON_Bat instances positioned around the MON_King
         gp.monster[22] = new MON_Bat(gp);
         gp.monster[22].worldX = 120 * gp.tileSize;
         gp.monster[22].worldY = 100 * gp.tileSize;
