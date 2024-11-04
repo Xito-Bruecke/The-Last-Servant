@@ -16,6 +16,8 @@ public class UI {
     Graphics2D g2;
     BufferedImage heart_full, heart_half, heart_empty;
 
+    public String currentDialogue = "";
+
     public UI(GamePanel gp) {
         this.gp = gp;
 
@@ -35,13 +37,20 @@ public class UI {
         g2.setFont(arial_40);
         g2.setColor(Color.white);
 
+        // PLAY STATE
         if (gp.gameState == gp.playState){
             drawPlayerLife();
         }
 
+        // PAUSE STATE
         if (gp.gameState == gp.pauseState){
             drawPauseScreen();
             drawPlayerLife();
+        }
+
+        // DIALOGUE STATE
+        if (gp.gameState == gp.dialogueState){
+            drawDialogueScreen();
         }
     }
 
@@ -81,6 +90,31 @@ public class UI {
         int y = gp.screenHeight/2;
 
         g2.drawString(text, x, y);
+    }
+
+    public void drawDialogueScreen(){
+        //WINDOW
+        int x = gp.tileSize * 2;
+        int y = gp.tileSize / 2;
+        int width = gp.screenWidth - (gp.tileSize * 4);
+        int height = gp.tileSize * 5;
+
+        drawSubWindow(x, y, width, height);
+
+        x += gp.tileSize;
+        y += gp.tileSize;
+        g2.drawString(currentDialogue, x, y);
+    }
+
+    public void drawSubWindow(int x, int y, int width, int height) {
+        Color c = new Color(0,0,0, 220);
+        g2.setColor(c);
+        g2.fillRoundRect(x, y, width, height, 35, 35);
+
+        c = new Color(255,255,255);
+        g2.setColor(c);
+        g2.setStroke(new BasicStroke(5));
+        g2.drawRoundRect(x+5, y+5, width-10, height-10, 25, 25);
     }
 
     public int getXforCenteredText(String text){

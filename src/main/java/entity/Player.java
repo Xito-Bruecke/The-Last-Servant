@@ -39,8 +39,13 @@ public class Player extends Entity {
         solidArea.width = 40;
         solidArea.height = 40;
 
+        attackArea.width = 36;
+        attackArea.height = 36;
+
+
         setDefaultValues();
         getPlayerImage();
+        getPlayerAttackImage();
     }
 
     public void setDefaultValues() {
@@ -112,8 +117,30 @@ public class Player extends Entity {
         }
     }
 
+    public void getPlayerAttackImage() {
+        try {
+            ASword1 = ImageIO.read(getClass().getResourceAsStream("/player/ASword1.png"));
+            ASword2 = ImageIO.read(getClass().getResourceAsStream("/player/ASword2.png"));
+            ASword3 = ImageIO.read(getClass().getResourceAsStream("/player/ASword3.png"));
+            ASword4 = ImageIO.read(getClass().getResourceAsStream("/player/ASword4.png"));
+            ASword5 = ImageIO.read(getClass().getResourceAsStream("/player/ASword5.png"));
+            ASword6 = ImageIO.read(getClass().getResourceAsStream("/player/ASword6.png"));
+
+            DSword1 = ImageIO.read(getClass().getResourceAsStream("/player/DSword1.png"));
+            DSword2 = ImageIO.read(getClass().getResourceAsStream("/player/DSword2.png"));
+            DSword3 = ImageIO.read(getClass().getResourceAsStream("/player/DSword3.png"));
+            DSword4 = ImageIO.read(getClass().getResourceAsStream("/player/DSword4.png"));
+            DSword5 = ImageIO.read(getClass().getResourceAsStream("/player/DSword5.png"));
+            DSword6 = ImageIO.read(getClass().getResourceAsStream("/player/DSword6.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void update() {
-        if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
+        if (attacking == true) {
+            attacking();
+        } else if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
             if (keyH.upPressed == true) {
                 direction = "wKey";
             } else if (keyH.downPressed == true) {
@@ -225,6 +252,59 @@ public class Player extends Entity {
         }
     }
 
+    public void attacking() {
+        spriteCounter++;
+        if (spriteCounter <= 4) {
+            spriteNum = 1;
+        } else if (spriteCounter > 5 && spriteCounter <= 8) {
+            spriteNum = 2;
+        } else if (spriteCounter > 9 && spriteCounter <= 12) {
+            spriteNum = 3;
+        } else if (spriteCounter > 13 && spriteCounter <= 16) {
+            spriteNum = 4;
+        } else if (spriteCounter > 17 && spriteCounter <= 20) {
+            spriteNum = 5;
+
+            // Save the current worldX, worldY, solidArea
+            int currentWorldX = worldX;
+            int currentWorldY = worldY;
+            int solidAreaWidth = solidArea.width;
+            int solidAreaHeight = solidArea.height;
+
+            // Adjust player's worldX/Y for the attackArea
+            switch (direction) {
+                case "wKey":
+                    worldY -= attackArea.height;
+                    break;
+                case "sKey":
+                    worldY += attackArea.height;
+                    break;
+                case "aKey":
+                    worldX -= attackArea.width;
+                case "dKey":
+                    worldX -= attackArea.width;
+            }
+
+            solidArea.width = attackArea.width;
+            solidArea.height = attackArea.height;
+
+            int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
+            damageMonster(monsterIndex);
+
+            worldX = currentWorldX;
+            worldY = currentWorldY;
+            solidArea.width = solidAreaWidth;
+            solidArea.height = solidAreaHeight;
+
+        } else if (spriteCounter > 21 && spriteCounter <= 24) {
+            spriteNum = 6;
+        } if (spriteCounter > 25) {
+            spriteNum = 1;
+            spriteCounter = 0;
+            attacking = false;
+        }
+    }
+
     public void pickUpObject(int i) {
         if (i != 999) {
             String objectName = gp.obj[i].name;
@@ -280,17 +360,36 @@ public class Player extends Entity {
     }
 
     public void interactNPC(int i) {
-        if (i != 999) {
-            System.out.println("touching!");
+        if(gp.keyH.enterPressed == true) {
+            if (i != 999) {
+                gp.gameState = gp.dialogueState;
+                gp.npc[i].speak();
+            } else {
+                attacking = true;
+            }
         }
     }
 
     public void contactMonster(int i) {
         if (i != 999) {
             // Decrease life
-            if (invincible == false);
-            life -=1;
-            invincible = true;
+            if (invincible == false) {
+                life -=1;
+                invincible = true;
+            }
+        }
+    }
+
+    public void damageMonster(int i) {
+        if (i != 999) {
+            if (gp.monster[i].invincible == false) {
+                gp.monster[i].life -= 1;
+                gp.monster[i].invincible = true;
+
+                if (gp.monster[i].life <= 0) {
+                    gp.monster[i] = null;
+                }
+            }
         }
     }
 
@@ -299,59 +398,123 @@ public class Player extends Entity {
 
         switch(direction) {
             case "wKey":
-                if (spriteNum == 1) {
-                    image = w1;
-                } else if (spriteNum == 2) {
-                    image = w2;
-                } else if (spriteNum == 3) {
-                    image = w3;
-                } else if (spriteNum == 4) {
-                    image = w4;
-                } else if (spriteNum == 5) {
-                    image = w5;
-                } else if (spriteNum == 6) {
-                    image = w6;
+                if (attacking == false) {
+                    if (spriteNum == 1) {
+                        image = w1;
+                    } else if (spriteNum == 2) {
+                        image = w2;
+                    } else if (spriteNum == 3) {
+                        image = w3;
+                    } else if (spriteNum == 4) {
+                        image = w4;
+                    } else if (spriteNum == 5) {
+                        image = w5;
+                    } else if (spriteNum == 6) {
+                        image = w6;
+                    }
+                } else if (attacking == true) {
+                    if (spriteNum == 1) {
+                        image = ASword1;
+                    } else if (spriteNum == 2) {
+                        image = ASword2;
+                    } else if (spriteNum == 3) {
+                        image = ASword3;
+                    } else if (spriteNum == 4) {
+                        image = ASword4;
+                    } else if (spriteNum == 5) {
+                        image = ASword5;
+                    } else if (spriteNum == 6) {
+                        image = ASword6;
+                    }
                 }
                 break;
             case "sKey":
-                if (spriteNum == 1) {
-                    image = s1;
-                } else if (spriteNum == 2) {
-                    image = s2;
-                } else if (spriteNum == 3) {
-                    image = s3;
-                } else if (spriteNum == 4) {
-                    image = s4;
-                } else if (spriteNum == 5) {
-                    image = s5;
-                } else if (spriteNum == 6) {
-                    image = s6;
+                if (attacking == false) {
+                    if (spriteNum == 1) {
+                        image = s1;
+                    } else if (spriteNum == 2) {
+                        image = s2;
+                    } else if (spriteNum == 3) {
+                        image = s3;
+                    } else if (spriteNum == 4) {
+                        image = s4;
+                    } else if (spriteNum == 5) {
+                        image = s5;
+                    } else if (spriteNum == 6) {
+                        image = s6;
+                    }
+                } else if (attacking == true) {
+                    if (spriteNum == 1) {
+                        image = DSword1;
+                    } else if (spriteNum == 2) {
+                        image = DSword2;
+                    } else if (spriteNum == 3) {
+                        image = DSword3;
+                    } else if (spriteNum == 4) {
+                        image = DSword4;
+                    } else if (spriteNum == 5) {
+                        image = DSword5;
+                    } else if (spriteNum == 6) {
+                        image = DSword6;
+                    }
                 }
                 break;
             case "aKey":
-                if (leftRightNum == 1) {
-                    image = a1;
-                } else if (leftRightNum == 2) {
-                    image = a2;
-                } else if (leftRightNum == 3) {
-                    image = a3;
-                } else if (leftRightNum == 4) {
-                    image = a4;
-                } else if (leftRightNum == 5) {
-                    image = a5;
+                if (attacking == false) {
+                    if (leftRightNum == 1) {
+                        image = a1;
+                    } else if (leftRightNum == 2) {
+                        image = a2;
+                    } else if (leftRightNum == 3) {
+                        image = a3;
+                    } else if (leftRightNum == 4) {
+                        image = a4;
+                    } else if (leftRightNum == 5) {
+                        image = a5;
+                    }
+                } else if (attacking == true) {
+                    if (leftRightNum == 1) {
+                        image = ASword1;
+                    } else if (leftRightNum == 2) {
+                        image = ASword2;
+                    } else if (leftRightNum == 3) {
+                        image = ASword3;
+                    } else if (leftRightNum == 4) {
+                        image = ASword4;
+                    } else if (leftRightNum == 5) {
+                        image = ASword5;
+                    } else if (leftRightNum == 6) {
+                        image = ASword6;
+                    }
                 }
                 break;
             case "dKey":
-                if (leftRightNum == 1) {
-                    image = d1;
-                } else if (leftRightNum == 2) {
-                    image = d2;
-                } else if (leftRightNum == 3) {
-                    image = d3;
-                } else if (leftRightNum == 4) {
-                    image = d4;
-                } else if (leftRightNum == 5) {
-                    image = d5;
+                if (attacking == false) {
+                    if (spriteNum == 1) {
+                        image = d1;
+                    } else if (spriteNum == 2) {
+                        image = d2;
+                    } else if (spriteNum == 3) {
+                        image = d3;
+                    } else if (spriteNum == 4) {
+                        image = d4;
+                    } else if (spriteNum == 5) {
+                        image = d5;
+                    }
+                } else if (attacking == true) {
+                    if (spriteNum == 1) {
+                        image = DSword1;
+                    } else if (spriteNum == 2) {
+                        image = DSword2;
+                    } else if (spriteNum == 3) {
+                        image = DSword3;
+                    } else if (spriteNum == 4) {
+                        image = DSword4;
+                    } else if (spriteNum == 5) {
+                        image = DSword5;
+                    } else if (spriteNum == 6) {
+                        image = DSword6;
+                    }
                 }
                 break;
             case "afk_wKey":

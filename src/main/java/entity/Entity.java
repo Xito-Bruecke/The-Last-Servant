@@ -22,6 +22,7 @@ public class Entity {
             ritterGruenA1, ritterGruenA2, ritterGruenA3, ritterGruenA4, ritterGruenA5, ritterGruenA6, ritterGruenA7, ritterGruenA8,
             ritterGruenD1, ritterGruenD2, ritterGruenD3, ritterGruenD4, ritterGruenD5, ritterGruenD6, ritterGruenD7, ritterGruenD8;
     public BufferedImage kingW1, kingW2, kingW3, kingW4, kingS1, kingS2, kingS3, kingS4, kingA1, kingA2, kingA3, kingA4, kingD1, kingD2, kingD3, kingD4;
+    public BufferedImage ASword1, ASword2, ASword3, ASword4, ASword5, ASword6, DSword1, DSword2, DSword3, DSword4, DSword5, DSword6;
     public String direction;
     public int spriteCounter = 0;
     public int spriteNum = 1;
@@ -47,12 +48,18 @@ public class Entity {
     public int actionLockCounterKing = 0;
     public boolean invincible = false;
     public int invincibleCounter = 0;
+    String dialogues[] = new String[5];
+    int dialogueIndex = 0;
+    boolean attacking = false;
+    public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
+    public int type; // 0 = player, 1 = npc, 2 = monster
 
     public Entity(GamePanel gp) {
         this.gp = gp;
     }
 
     public void setAction() {}
+    public void speak() {}
     public void setActionBat() {}
     public void setActionRitter() {}
     public void setActionKing() {}
@@ -159,6 +166,15 @@ public class Entity {
                     kingNum = 1;
                 }
                 kingCounter = 0;
+            }
+        }
+
+        if (invincible == true) {
+            invincibleCounter++;
+            // Decrease life
+            if (invincibleCounter > 40) {
+                invincible = false;
+                invincibleCounter = 0;
             }
         }
     }
@@ -499,6 +515,19 @@ public class Entity {
                         image = dAfk3;
                     }
                     break;
+            }
+
+            // Monster HP bar
+            if (type == 2) {
+                double oneScale = (double)gp.tileSize/maxLife;
+                double hpBarValue = oneScale*life;
+
+                g2.setColor(new Color(35,35,35));
+                g2.fillRect(screenX-1, screenY-16, gp.tileSize+2, 12);
+
+                g2.setColor(new Color(255,0,30));
+                g2.fillRect(screenX, screenY - 15, (int)hpBarValue, 10);
+
             }
         }
         g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);

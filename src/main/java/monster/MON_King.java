@@ -15,9 +15,10 @@ public class MON_King extends Entity {
         direction = "sKey"; // Set a default direction to avoid null issues
 
         name = "King";
-        speed = 2;
+        speed = 1;
         maxLife = 8;
         life = maxLife;
+        type = 2;
 
         solidArea.x = 4;
         solidArea.y = 12;

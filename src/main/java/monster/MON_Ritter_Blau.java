@@ -18,6 +18,7 @@ public class MON_Ritter_Blau extends Entity {
         speed = 1;
         maxLife = 6;
         life = maxLife;
+        type = 2;
 
         solidArea.x = 4;
         solidArea.y = 12;

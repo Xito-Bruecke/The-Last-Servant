@@ -1,5 +1,6 @@
 package main;
 
+import entity.Entity;
 import entity.NPC;
 import monster.MON_Bat;
 import monster.MON_King;
@@ -10,12 +11,12 @@ import object.*;
 public class AssetSetter {
 
     GamePanel gp;
+
     public AssetSetter(GamePanel gp) {
         this.gp = gp;
     }
 
     public void setObject() {
-
         gp.obj[0] = new OBJ_Ring();
         gp.obj[0].worldX = 28 * gp.tileSize;
         gp.obj[0].worldY = 60 * gp.tileSize;
@@ -51,8 +52,8 @@ public class AssetSetter {
 
     public void setNPC() {
         gp.npc[0] = new NPC(gp);
-        gp.npc[0].worldX = 84 * gp.tileSize; //99
-        gp.npc[0].worldY = 99 * gp.tileSize; //84
+        gp.npc[0].worldX = 84 * gp.tileSize;
+        gp.npc[0].worldY = 99 * gp.tileSize;
     }
 
     public void setMonster() {

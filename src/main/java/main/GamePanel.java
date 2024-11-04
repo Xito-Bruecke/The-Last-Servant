@@ -2,7 +2,6 @@ package main;
 
 import entity.Entity;
 import entity.Player;
-import monster.MON_Bat;
 import object.SuperObject;
 import tile.TileManager;
 
@@ -33,8 +32,8 @@ public class GamePanel extends JPanel implements Runnable{
 
     // SYSTEM
     TileManager tileM = new TileManager(this);
-    KeyHandler keyH = new KeyHandler(this);
-    UI ui = new UI(this);
+    public KeyHandler keyH = new KeyHandler(this);
+    public UI ui = new UI(this);
     Thread gameThread;
     public CollisionChecker cChecker = new CollisionChecker(this);
     public AssetSetter aSetter = new AssetSetter(this);
@@ -49,6 +48,7 @@ public class GamePanel extends JPanel implements Runnable{
     public int gameState;
     public final int playState = 1;
     public final int pauseState = 2;
+    public final int dialogueState = 3;
 
     public GamePanel() {
 
@@ -152,10 +152,7 @@ public class GamePanel extends JPanel implements Runnable{
         // Draw Monster character
         for (int i = 0; i < monster.length; i++) {
             if (monster[i] != null) {
-                System.out.println("Drawing monster at index " + i);
                 monster[i].draw(g2);
-            } else {
-                System.out.println("Monster at index " + i + " is null.");
             }
         }
 
